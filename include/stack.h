@@ -6,7 +6,7 @@ template <typename T>
 class my_stack
 {
 private:
-	my_vector<T> container;
+	my_vector<T> container{};
 
 public:
 	void push(T x)
@@ -16,7 +16,7 @@ public:
 
 	std::optional<T> pop()
 	{
-		if (this->empty())
+		if (empty())
 		{
 			return std::nullopt;
 		}
@@ -36,7 +36,7 @@ public:
 
 	std::optional<T> top()
 	{
-		if (this->empty())
+		if (empty())
 		{
 			return std::nullopt;
 		}

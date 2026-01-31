@@ -47,7 +47,7 @@ public:
 	T pop_back()
 	{
 		--_size;
-		return move(_arr[_size]);
+		return std::move(_arr[_size]);
 	}
 
 	int size()
