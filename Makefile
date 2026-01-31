@@ -30,7 +30,7 @@ build: $(OUT)
 
 run: $(OUT)
 	@echo "Running executable..."
-	@./$(OUT)
+	@./$(OUT) < input.txt
 
 clean:
 	rm -rf $(OBJ_DIR)
