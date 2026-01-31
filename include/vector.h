@@ -33,6 +33,11 @@ public:
 	{
 	}
 
+	~my_vector()
+	{
+		delete[] _arr;
+	}
+
 	void push_back(T x)
 	{
 		if (_size == _capacity)
@@ -81,5 +86,24 @@ public:
 	T *end()
 	{
 		return _arr + _size;
+	}
+
+	void resize(int new_size)
+	{
+		if (_size < new_size)
+		{
+			// TODO: 멍청하고 느린데 나중에 수정함
+			while (_capacity >= new_size)
+			{
+				reallocate();
+			}
+
+			for (int i = _size; i < new_size; ++i)
+			{
+				_arr[i] = T{};
+			}
+		}
+
+		_size = new_size;
 	}
 };
