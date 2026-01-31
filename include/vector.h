@@ -1,9 +1,11 @@
 #pragma once
+#include <utility>
 
+template <typename T>
 class my_vector
 {
 private:
-	int *_arr;
+	T *_arr;
 	int _size;
 	int _capacity;
 
@@ -11,8 +13,8 @@ private:
 
 	void reallocate()
 	{
-		int *old_arr = _arr;
-		_arr = new int[_capacity * 2];
+		T *old_arr = _arr;
+		_arr = new T[_capacity * 2];
 
 		for (int i = 0; i < _size; ++i)
 		{
@@ -24,14 +26,14 @@ private:
 	}
 
 public:
-	my_vector() : _arr(new int[INITIAL_CAP]), _size(0), _capacity(INITIAL_CAP)
+	my_vector() : _arr(new T[INITIAL_CAP]), _size(0), _capacity(INITIAL_CAP)
 	{
 	}
-	my_vector(int initial_size) : _arr(new int[initial_size]{}), _size(initial_size), _capacity(initial_size)
+	my_vector(int initial_size) : _arr(new T[initial_size]{}), _size(initial_size), _capacity(initial_size)
 	{
 	}
 
-	void push_back(int x)
+	void push_back(T x)
 	{
 		if (_size == _capacity)
 		{
@@ -42,10 +44,10 @@ public:
 		++_size;
 	}
 
-	int pop_back()
+	T pop_back()
 	{
 		--_size;
-		return _arr[_size];
+		return move(_arr[_size]);
 	}
 
 	int size()
@@ -58,25 +60,25 @@ public:
 		return _size == 0;
 	}
 
-	int &operator[](int x)
+	T &operator[](int x)
 	{
 		return _arr[x];
 	}
 
-	int front()
+	T front()
 	{
 		return _arr[0];
 	}
-	int back()
+	T back()
 	{
 		return _arr[_size - 1];
 	}
 
-	int *begin()
+	T *begin()
 	{
 		return _arr;
 	}
-	int *end()
+	T *end()
 	{
 		return _arr + _size;
 	}

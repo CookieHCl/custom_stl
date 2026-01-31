@@ -9,7 +9,7 @@ int main()
 
 	int n, k;
 	string s;
-	my_stack st;
+	my_stack<int> st;
 	for (cin >> n; n--;)
 	{
 		cin >> s;

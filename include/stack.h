@@ -2,18 +2,19 @@
 #include "vector.h"
 #include <optional>
 
+template <typename T>
 class my_stack
 {
 private:
-	my_vector container;
+	my_vector<T> container;
 
 public:
-	void push(int x)
+	void push(T x)
 	{
 		container.push_back(x);
 	}
 
-	std::optional<int> pop()
+	std::optional<T> pop()
 	{
 		if (this->empty())
 		{
@@ -33,7 +34,7 @@ public:
 		return container.empty();
 	}
 
-	std::optional<int> top()
+	std::optional<T> top()
 	{
 		if (this->empty())
 		{
