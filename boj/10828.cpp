@@ -20,12 +20,7 @@ int main()
 		}
 		else if (s == "pop")
 		{
-			if (st.empty())
-			{
-				st.push(-1);
-			}
-			cout << st.top().value() << '\n';
-			st.pop();
+			cout << (st.empty() ? -1 : st.pop().value()) << '\n';
 		}
 		else if (s == "size")
 		{
@@ -37,7 +32,7 @@ int main()
 		}
 		else if (s == "top")
 		{
-			cout << (st.empty() ? -1 : st.top().value()) << '\n';
+			cout << (st.empty() ? -1 : st.top()) << '\n';
 		}
 	}
 

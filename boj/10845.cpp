@@ -21,15 +21,7 @@ int main()
 		}
 		else if (s == "pop")
 		{
-			if (q.empty())
-			{
-				cout << "-1\n";
-			}
-			else
-			{
-				cout << q.front().value() << '\n';
-				q.pop();
-			}
+			cout << (q.empty() ? -1 : q.pop().value()) << '\n';
 		}
 		else if (s == "size")
 		{
@@ -41,11 +33,11 @@ int main()
 		}
 		else if (s == "front")
 		{
-			cout << (q.empty() ? -1 : q.front().value()) << '\n';
+			cout << (q.empty() ? -1 : q.front()) << '\n';
 		}
 		else if (s == "back")
 		{
-			cout << (q.empty() ? -1 : q.back().value()) << '\n';
+			cout << (q.empty() ? -1 : q.back()) << '\n';
 		}
 	}
 	return 0;
