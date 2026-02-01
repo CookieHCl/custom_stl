@@ -1,36 +1,77 @@
 #pragma once
 #include <utility>
+#include <concepts>
 
 template <typename T>
 class my_vector
 {
+public:
+	using size_type = int;
+
 private:
 	T *_arr;
-	int _size;
-	int _capacity;
+	size_type _size;
+	size_type _capacity;
 
-	static constexpr int INITIAL_CAP = 8;
+	static constexpr size_type INITIAL_CAP = 8;
 
-	void reallocate()
+	void _reallocate()
 	{
-		T *old_arr = _arr;
-		_arr = new T[_capacity * 2];
-
-		for (int i = 0; i < _size; ++i)
+		_reallocate(_capacity * 2);
+	}
+	void _reallocate(size_type new_size)
+	{
+		if (new_size <= _capacity)
 		{
-			_arr[i] = old_arr[i];
+			return;
 		}
 
-		delete[] old_arr;
-		_capacity *= 2;
+		T *new_arr = new T[new_size];
+
+		for (size_type i = 0; i < _size; ++i)
+		{
+			new_arr[i] = std::move(_arr[i]);
+		}
+
+		delete[] _arr;
+		_arr = new_arr;
+		_capacity = new_size;
 	}
 
 public:
 	my_vector() : _arr(new T[INITIAL_CAP]), _size(0), _capacity(INITIAL_CAP)
 	{
 	}
-	my_vector(int initial_size) : _arr(new T[initial_size]{}), _size(initial_size), _capacity(initial_size)
+	my_vector(size_type initial_size) : _arr(new T[initial_size]{}), _size(initial_size), _capacity(initial_size)
 	{
+	}
+
+	friend void swap(my_vector &a, my_vector &b) noexcept
+	{
+		using std::swap;
+
+		swap(a._arr, b._arr);
+		swap(a._size, b._size);
+		swap(a._capacity, b._capacity);
+	}
+
+	my_vector(const my_vector &other)
+		: _arr(new T[other._capacity]), _size(other._size), _capacity(other._capacity)
+	{
+		for (size_t i = 0; i < _size; ++i)
+		{
+			_arr[i] = other._arr[i];
+		}
+	}
+	my_vector(my_vector &&other) noexcept
+		: _arr(nullptr), _size(0), _capacity(0)
+	{
+		swap(*this, other);
+	}
+	my_vector &operator=(my_vector other)
+	{
+		swap(*this, other);
+		return *this;
 	}
 
 	~my_vector()
@@ -38,43 +79,58 @@ public:
 		delete[] _arr;
 	}
 
-	void push_back(T x)
+	template <typename U>
+		requires std::convertible_to<U, T>
+	void push_back(U &&x)
 	{
 		if (_size == _capacity)
 		{
-			reallocate();
+			_reallocate();
 		}
 
-		_arr[_size] = x;
+		_arr[_size] = std::forward<U>(x);
 		++_size;
 	}
 
-	T pop_back()
+	void pop_back()
 	{
 		--_size;
-		return std::move(_arr[_size]);
 	}
 
-	int size()
+	size_type size() const
 	{
 		return _size;
 	}
 
-	bool empty()
+	bool empty() const
 	{
 		return _size == 0;
 	}
 
-	T &operator[](int x)
+	T &operator[](size_type x)
 	{
 		return _arr[x];
 	}
 
-	T front()
+	T &front()
 	{
 		return _arr[0];
 	}
-	T back()
+	T &back()
+	{
+		return _arr[_size - 1];
+	}
+
+	const T &operator[](size_type x) const
+	{
+		return _arr[x];
+	}
+
+	const T &front() const
+	{
+		return _arr[0];
+	}
+	const T &back() const
 	{
 		return _arr[_size - 1];
 	}
@@ -88,17 +144,22 @@ public:
 		return _arr + _size;
 	}
 
-	void resize(int new_size)
+	const T *begin() const
+	{
+		return _arr;
+	}
+	const T *end() const
+	{
+		return _arr + _size;
+	}
+
+	void resize(size_type new_size)
 	{
 		if (_size < new_size)
 		{
-			// TODO: 멍청하고 느린데 나중에 수정함
-			while (_capacity >= new_size)
-			{
-				reallocate();
-			}
+			_reallocate(new_size);
 
-			for (int i = _size; i < new_size; ++i)
+			for (size_type i = _size; i < new_size; ++i)
 			{
 				_arr[i] = T{};
 			}
