@@ -1,6 +1,7 @@
 #pragma once
 #include "vector.h"
 #include <utility>
+#include <concepts>
 #include <optional>
 
 template <typename T>
@@ -12,12 +13,12 @@ public:
 private:
 	my_vector<T> container{};
 
-	int _head = 0;
+	size_type _head = 0;
 
 	void _reallocate()
 	{
-		int s = size();
-		for (int i = 0; i < s; ++i)
+		size_type s = size();
+		for (size_type i = 0; i < s; ++i)
 		{
 			container[i] = std::move(container[_head + i]);
 		}
@@ -46,7 +47,7 @@ public:
 			return std::nullopt;
 		}
 
-		return container[_head++];
+		return std::move(container[_head++]);
 	}
 
 	size_type size() const
@@ -59,23 +60,21 @@ public:
 		return container.size() == _head;
 	}
 
-	std::optional<T> front()
+	T &front()
 	{
-		if (empty())
-		{
-			return std::nullopt;
-		}
-
+		return container[_head];
+	}
+	const T &front() const
+	{
 		return container[_head];
 	}
 
-	std::optional<T> back()
+	T &back()
 	{
-		if (empty())
-		{
-			return std::nullopt;
-		}
-
+		return container.back();
+	}
+	const T &back() const
+	{
 		return container.back();
 	}
 };
