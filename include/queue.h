@@ -1,21 +1,25 @@
 #pragma once
 #include "vector.h"
+#include <utility>
 #include <optional>
 
 template <typename T>
 class my_queue
 {
+public:
+	using size_type = typename my_vector<T>::size_type;
+
 private:
 	my_vector<T> container{};
 
 	int _head = 0;
 
-	void reallocate()
+	void _reallocate()
 	{
 		int s = size();
 		for (int i = 0; i < s; ++i)
 		{
-			container[i] = container[_head + i];
+			container[i] = std::move(container[_head + i]);
 		}
 
 		container.resize(s);
@@ -23,14 +27,16 @@ private:
 	}
 
 public:
-	void push(T x)
+	template <typename U>
+		requires std::convertible_to<U, T>
+	void push(U &&x)
 	{
 		if (_head > (container.size() + 1) / 2)
 		{
-			reallocate();
+			_reallocate();
 		}
 
-		container.push_back(x);
+		container.push_back(std::forward<U>(x));
 	}
 
 	std::optional<T> pop()
@@ -43,12 +49,12 @@ public:
 		return container[_head++];
 	}
 
-	int size()
+	size_type size() const
 	{
 		return container.size() - _head;
 	}
 
-	bool empty()
+	bool empty() const
 	{
 		return container.size() == _head;
 	}
