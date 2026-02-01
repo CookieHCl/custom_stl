@@ -1,6 +1,7 @@
 #pragma once
 #include <utility>
 #include <concepts>
+#include <optional>
 
 template <typename T>
 class my_vector
@@ -58,7 +59,7 @@ public:
 	my_vector(const my_vector &other)
 		: _arr(new T[other._capacity]), _size(other._size), _capacity(other._capacity)
 	{
-		for (size_t i = 0; i < _size; ++i)
+		for (size_type i = 0; i < _size; ++i)
 		{
 			_arr[i] = other._arr[i];
 		}
@@ -92,9 +93,15 @@ public:
 		++_size;
 	}
 
-	void pop_back()
+	std::optional<T> pop_back()
 	{
+		if (empty())
+		{
+			return std::nullopt;
+		}
+
 		--_size;
+		return std::move(_arr[_size]);
 	}
 
 	size_type size() const

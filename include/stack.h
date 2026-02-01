@@ -1,6 +1,7 @@
 #pragma once
 #include "vector.h"
 #include <utility>
+#include <concepts>
 #include <optional>
 
 template <typename T>
@@ -22,14 +23,7 @@ public:
 
 	std::optional<T> pop()
 	{
-		if (empty())
-		{
-			return std::nullopt;
-		}
-
-		T top = std::move(container.back());
-		container.pop_back();
-		return top;
+		return container.pop_back();
 	}
 
 	size_type size() const
@@ -42,13 +36,12 @@ public:
 		return container.empty();
 	}
 
-	std::optional<T> top()
+	T &top()
 	{
-		if (empty())
-		{
-			return std::nullopt;
-		}
-
+		return container.back();
+	}
+	const T &top() const
+	{
 		return container.back();
 	}
 };
