@@ -29,6 +29,7 @@ private:
 	};
 
 	Node *_root = nullptr;
+	bool _multi_mode;
 
 	void _delete_node(Node *node)
 	{
@@ -174,6 +175,31 @@ private:
 		}
 	}
 
+	void _erase_one(const T &k, Node *&cur)
+	{
+		if (!cur)
+		{
+			return;
+		}
+
+		if (cur->x == k)
+		{
+			Node *temp = cur;
+			_merge(cur, cur->left, cur->right);
+
+			delete temp;
+		}
+		else if (cur->x < k)
+		{
+			_erase_one(k, cur->right);
+		}
+		else // cur->x > k
+		{
+			_erase_one(k, cur->left);
+		}
+		_update_size(cur);
+	}
+
 	template <typename Func>
 		requires std::regular_invocable<Func, T>
 	void _iterate(Node *cur, const Func &f)
@@ -195,6 +221,8 @@ private:
 	}
 
 public:
+	my_set(bool multi_mode = false) : _multi_mode(multi_mode) {}
+
 	~my_set()
 	{
 		_delete_node(_root);
@@ -226,7 +254,7 @@ public:
 		requires std::convertible_to<U, T>
 	void insert(U &&x)
 	{
-		if (find(x))
+		if (!_multi_mode && find(x))
 		{
 			return;
 		}
@@ -246,6 +274,11 @@ public:
 			_merge(_root, left, new_node);
 			_merge(_root, _root, right);
 		}
+	}
+
+	void erase_one(const T &x)
+	{
+		_erase_one(x, _root);
 	}
 
 	void erase(const T &x)
