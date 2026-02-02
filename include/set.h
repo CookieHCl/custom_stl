@@ -220,8 +220,60 @@ private:
 		}
 	}
 
+	Node *_copy_tree(Node *tree)
+	{
+		if (!tree)
+		{
+			return nullptr;
+		}
+
+		Node *new_tree = new Node(tree->x);
+
+		new_tree->left = _copy_tree(tree->left);
+		new_tree->right = _copy_tree(tree->right);
+		new_tree->priority = tree->priority;
+		new_tree->size = tree->size;
+
+		return new_tree;
+	}
+
 public:
 	my_set(bool multi_mode = false) : _multi_mode(multi_mode) {}
+
+	my_set(const my_set &other) : _root(_copy_tree(other._root)), _multi_mode(other._multi_mode) {}
+	my_set(my_set &&other)
+	{
+		_root = other._root;
+		_multi_mode = other._multi_mode;
+
+		other._root = nullptr;
+	}
+
+	my_set &operator=(const my_set &other)
+	{
+		if (this != &other)
+		{
+			_delete_node(_root);
+
+			_root = _copy_tree(other._root);
+			_multi_mode = other._multi_mode;
+		}
+
+		return *this;
+	}
+	my_set &operator=(my_set &&other)
+	{
+		if (this != &other)
+		{
+			_delete_node(_root);
+
+			_root = other._root;
+			_multi_mode = other._multi_mode;
+			other._root = nullptr;
+		}
+
+		return *this;
+	}
 
 	~my_set()
 	{
